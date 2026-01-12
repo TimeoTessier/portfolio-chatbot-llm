@@ -347,7 +347,8 @@ if 'session_id' not in st.session_state:
 
 # Afficher l'historique des messages
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
+    avatar = "img/robot.avif" if message["role"] == "assistant" else None
+    with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
         
         # Afficher les sources si disponibles
@@ -397,7 +398,7 @@ if prompt:
         st.markdown(prompt)
     
     # Générer la réponse de l'assistant
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar="img/robot.avif"):
         message_placeholder = st.empty()
         
         try:

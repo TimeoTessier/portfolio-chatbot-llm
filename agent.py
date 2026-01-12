@@ -21,6 +21,31 @@ VERBOSE_MODE = False
 
 
 @function_tool
+def get_contact_info() -> str:
+    """
+    Retourne les informations de contact de Timéo Tessier.
+    Utilisez cet outil quand quelqu'un demande comment contacter Timéo,
+    ses coordonnées, son email, LinkedIn, GitHub, ou comment le joindre.
+    
+    Returns:
+        Les coordonnées complètes de Timéo
+    """
+    return """
+📧 **Email** : t-tessier@smacl.fr
+
+💼 **LinkedIn** : https://www.linkedin.com/in/timéo-tessier-662a85295/
+
+🐙 **GitHub** : https://github.com/TimeoTessier
+
+📍 **Localisation** : Niort, France
+
+📄 **Documents** : Mon CV et mes bilans personnels sont disponibles en téléchargement dans la sidebar à gauche de l'application !
+
+💡 N'hésite pas à me contacter pour discuter d'opportunités professionnelles ou de projets data !
+"""
+
+
+@function_tool
 def search_portfolio_data(query: str) -> str:
     """
     Recherche des informations dans la base de données vectorielle du portfolio.
@@ -102,7 +127,10 @@ def create_portfolio_agent() -> Agent:
         
         RÈGLES IMPORTANTES :
         
-        1. **Questions sur MON profil** : Utilise TOUJOURS l'outil search_portfolio_data pour récupérer des informations sur :
+        1. **Questions sur MES coordonnées/contact** : Utilise l'outil get_contact_info pour fournir mes informations de contact
+           (email, LinkedIn, GitHub, localisation). Utilise cet outil dès que quelqu'un demande comment me contacter.
+        
+        2. **Questions sur MON profil** : Utilise l'outil search_portfolio_data pour récupérer des informations sur :
            - Mes compétences techniques (SQL, Python, Qlik, etc.)
            - Mon parcours de formation (BUT Science des Données)
            - Mes expériences professionnelles (alternance SMACL)
@@ -111,25 +139,25 @@ def create_portfolio_agent() -> Agent:
            - Mon profil psychologique et style de travail
            - Toute autre information ME concernant
         
-        2. **Documents disponibles** : Si quelqu'un demande mon CV ou mes bilans personnels, mentionne que ces documents
+        3. **Documents disponibles** : Si quelqu'un demande mon CV ou mes bilans personnels, mentionne que ces documents
            sont disponibles au téléchargement dans la barre latérale (sidebar) de l'application.
            Tu peux dire : "Mon CV et mes bilans personnels sont disponibles en téléchargement dans la sidebar à gauche !"
         
-        3. **Questions générales ou hors sujet** : N'utilise PAS l'outil search_portfolio_data.
+        4. **Questions générales ou hors sujet** : N'utilise PAS les outils.
            Réponds simplement de manière conversationnelle en tant que Timéo.
            Exemples : questions sur l'astronomie, la météo, des faits généraux, etc.
            Tu peux dire : "Je ne suis pas spécialiste en [sujet], mais je peux t'en parler brièvement..."
         
-        4. **Recentrage sur le profil** : Si la question n'a rien à voir avec moi, réponds brièvement puis suggère
+        5. **Recentrage sur le profil** : Si la question n'a rien à voir avec moi, réponds brièvement puis suggère
            de poser des questions sur mon profil professionnel.
         
-        Après avoir récupéré les informations via l'outil, réponds de manière naturelle et conversationnelle 
+        Après avoir récupéré les informations via les outils, réponds de manière naturelle et conversationnelle 
         à la première personne ("je", "mon", "mes") comme si tu étais Timéo.
         
         Sois professionnel mais amical et accessible.
         """,
         model="gpt-4.1-nano",
-        tools=[search_portfolio_data],
+        tools=[get_contact_info, search_portfolio_data],
     )
     
     return agent
