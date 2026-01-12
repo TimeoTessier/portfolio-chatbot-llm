@@ -5,7 +5,7 @@ Interface de chat avec un agent IA qui connaît tout le profil professionnel
 
 import streamlit as st
 import asyncio
-from agent import create_portfolio_agent, LAST_SOURCES_USED
+from src.agent import create_portfolio_agent, LAST_SOURCES_USED
 from agents import Runner, SQLiteSession
 from agents.exceptions import MaxTurnsExceeded, ModelBehaviorError, AgentsException
 
