@@ -205,9 +205,9 @@ if __name__ == "__main__":
         
         # Optionnel : sauvegarder les chunks dans un fichier pour inspection
         import json
-        with open('chunks_output.json', 'w', encoding='utf-8') as f:
+        with open('data/chunks_output.json', 'w', encoding='utf-8') as f:
             json.dump(chunks, f, ensure_ascii=False, indent=2)
-        print(f"📝 Les chunks ont été sauvegardés dans 'chunks_output.json' pour inspection")
+        print(f"📝 Les chunks ont été sauvegardés dans 'data/chunks_output.json' pour inspection")
         
     except Exception as e:
         print(f"❌ Erreur : {e}")

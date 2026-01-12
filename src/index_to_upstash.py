@@ -20,10 +20,10 @@ def index_chunks_to_upstash():
     print("🔗 Connexion à Upstash établie")
     
     # Charger les chunks
-    with open("chunks_output.json", "r", encoding="utf-8") as f:
+    with open("data/chunks_output.json", "r", encoding="utf-8") as f:
         chunks = json.load(f)
     
-    print(f"📂 {len(chunks)} chunks chargés depuis chunks_output.json")
+    print(f"📂 {len(chunks)} chunks chargés depuis data/chunks_output.json")
     
     # Réinitialiser l'index (supprimer les anciennes données)
     print("🗑️  Réinitialisation de l'index...")
