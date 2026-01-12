@@ -1,7 +1,9 @@
 import os
 import asyncio
+from typing import Optional
 from dotenv import load_dotenv
-from agents import Agent, Runner, function_tool
+from agents import Agent, Runner, function_tool, SQLiteSession
+from agents.exceptions import MaxTurnsExceeded, ModelBehaviorError, AgentsException
 from upstash_vector import Index
 
 # Charger les variables d'environnement
@@ -12,6 +14,10 @@ upstash_index = Index(
     url=os.getenv("UPSTASH_VECTOR_REST_URL"),
     token=os.getenv("UPSTASH_VECTOR_REST_TOKEN")
 )
+
+# Variable globale pour stocker les sources utilisées
+LAST_SOURCES_USED = []
+VERBOSE_MODE = False
 
 
 @function_tool
@@ -31,31 +37,52 @@ def search_portfolio_data(query: str) -> str:
     Returns:
         Les informations pertinentes trouvées dans la base de données
     """
+    global LAST_SOURCES_USED
+    LAST_SOURCES_USED = []
+    
     try:
+        # Augmenter top_k pour avoir plus de résultats
+        top_k = 8
+        
+        if VERBOSE_MODE:
+            print(f"  🔍 Recherche avec top_k={top_k}...")
+        
         # Rechercher dans la base vectorielle
         results = upstash_index.query(
             data=query,
-            top_k=5,
+            top_k=top_k,
             include_metadata=True
         )
         
         if not results:
             return "Aucune information trouvée pour cette question."
         
-        # Formater les résultats
+        if VERBOSE_MODE:
+            print(f"  ✅ {len(results)} résultats trouvés")
+        
+        # Formater les résultats et stocker les sources (sans filtrage strict)
         formatted_results = []
+        sources_set = set()
+        
         for i, result in enumerate(results, 1):
             content = result.metadata.get('content', '')
             source = result.metadata.get('source', 'N/A')
             score = result.score
             
+            sources_set.add(source)
+            
             formatted_results.append(
                 f"[Résultat {i} - Score: {score:.2f} - Source: {source}]\n{content}"
             )
         
+        # Stocker les sources pour affichage
+        LAST_SOURCES_USED = list(sources_set)
+        
         return "\n\n".join(formatted_results)
     
     except Exception as e:
+        if VERBOSE_MODE:
+            print(f"  ❌ Erreur : {str(e)}")
         return f"Erreur lors de la recherche : {str(e)}"
 
 
@@ -92,8 +119,11 @@ def create_portfolio_agent() -> Agent:
 
 async def test_agent():
     """
-    Fonction de test asynchrone pour l'agent avec RAG
+    Fonction de test asynchrone pour l'agent avec RAG (version améliorée)
     """
+    global VERBOSE_MODE
+    VERBOSE_MODE = True  # Activer verbose pour les tests
+    
     agent = create_portfolio_agent()
     
     # Questions de test qui nécessitent la recherche vectorielle
@@ -106,18 +136,36 @@ async def test_agent():
         "Parle-moi de ton alternance chez SMACL",
     ]
     
-    print("🤖 Test de l'agent Portfolio avec RAG")
+    print("🤖 Test de l'agent Portfolio avec RAG (Version améliorée)")
     print("=" * 80)
     print()
+    
+    # Session pour les tests
+    session = SQLiteSession("portfolio_test")
     
     for question in test_questions:
         print(f"❓ Question : {question}")
         print("-" * 80)
         
-        # Exécution asynchrone de l'agent
-        result = await Runner.run(agent, question)
+        try:
+            # Exécution asynchrone de l'agent avec session
+            result = await Runner.run(agent, question, session=session)
+            
+            print(f"💬 Réponse : {result.final_output}")
+            
+            # Afficher les sources
+            if LAST_SOURCES_USED:
+                print(f"📚 Sources : {', '.join(LAST_SOURCES_USED)}")
+            
+        except MaxTurnsExceeded as e:
+            print(f"⚠️  Erreur : Nombre maximum de tours dépassé - {e}")
+        except ModelBehaviorError as e:
+            print(f"⚠️  Erreur : Comportement inattendu du modèle - {e}")
+        except AgentsException as e:
+            print(f"⚠️  Erreur de l'agent : {e}")
+        except Exception as e:
+            print(f"❌ Erreur inattendue : {e}")
         
-        print(f"💬 Réponse : {result.final_output}")
         print()
         print("=" * 80)
         print()
@@ -125,28 +173,69 @@ async def test_agent():
 
 async def interactive_chat():
     """
-    Mode chat interactif avec l'agent
+    Mode chat interactif avec l'agent (version améliorée)
     """
+    global VERBOSE_MODE
+    
     agent = create_portfolio_agent()
     
     print("🤖 Chat interactif avec l'agent Portfolio")
     print("=" * 80)
-    print("Tapez 'exit' ou 'quit' pour quitter")
+    print("Commandes : 'exit' pour quitter | 'verbose' pour activer/désactiver le mode debug | 'sources' pour voir les dernières sources")
     print()
     
+    # Session pour sauvegarder l'historique
+    session = SQLiteSession("portfolio_chat")
+    
     while True:
-        user_input = input("Vous : ").strip()
+        try:
+            user_input = input("Vous : ").strip()
+        except KeyboardInterrupt:
+            print("\n\n👋 Au revoir !")
+            break
+        except EOFError:
+            print("\n\n👋 Au revoir !")
+            break
         
         if user_input.lower() in ['exit', 'quit', 'q']:
             print("\n👋 Au revoir !")
             break
         
+        if user_input.lower() == 'verbose':
+            VERBOSE_MODE = not VERBOSE_MODE
+            print(f"✅ Mode verbose {'activé' if VERBOSE_MODE else 'désactivé'}")
+            continue
+        
+        if user_input.lower() == 'sources':
+            if LAST_SOURCES_USED:
+                print(f"📚 Dernières sources utilisées : {', '.join(LAST_SOURCES_USED)}")
+            else:
+                print("Aucune source utilisée pour l'instant")
+            continue
+        
         if not user_input:
             continue
         
         print()
-        result = await Runner.run(agent, user_input)
-        print(f"Timéo : {result.final_output}")
+        
+        try:
+            # Exécution avec session pour l'historique
+            result = await Runner.run(agent, user_input, session=session)
+            print(f"Timéo : {result.final_output}")
+            
+            # Afficher les sources si disponibles
+            if LAST_SOURCES_USED and not VERBOSE_MODE:
+                print(f"📚 Sources : {', '.join(LAST_SOURCES_USED)}")
+            
+        except MaxTurnsExceeded as e:
+            print(f"⚠️  Nombre maximum de tours dépassé : {e}")
+        except ModelBehaviorError as e:
+            print(f"⚠️  Erreur de comportement du modèle : {e}")
+        except AgentsException as e:
+            print(f"⚠️  Erreur de l'agent : {e}")
+        except Exception as e:
+            print(f"❌ Erreur inattendue : {e}")
+        
         print()
         print("-" * 80)
         print()
@@ -154,9 +243,11 @@ async def interactive_chat():
 
 if __name__ == "__main__":
     # Choix du mode
+    print("🚀 Agent Portfolio - Version améliorée")
+    print()
     print("Choisissez le mode :")
-    print("1. Test automatique")
-    print("2. Chat interactif")
+    print("1. Test automatique (avec mode verbose)")
+    print("2. Chat interactif (avec historique + sources)")
     choice = input("Votre choix (1 ou 2) : ").strip()
     
     if choice == "1":
