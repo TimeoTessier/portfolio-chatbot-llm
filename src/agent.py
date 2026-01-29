@@ -31,17 +31,17 @@ def get_contact_info() -> str:
         Les coordonnées complètes de Timéo
     """
     return """
-📧 **Email** : t-tessier@smacl.fr
+Email: t-tessier@smacl.fr
 
-💼 **LinkedIn** : https://www.linkedin.com/in/timéo-tessier-662a85295/
+LinkedIn: https://www.linkedin.com/in/tim%C3%A9o-tessier-662a85295/
 
-🐙 **GitHub** : https://github.com/TimeoTessier
+GitHub: https://github.com/TimeoTessier
 
-📍 **Localisation** : Niort, France
+Localisation: Niort, France
 
-📄 **Documents** : Mon CV et mes bilans personnels sont disponibles en téléchargement dans la sidebar à gauche de l'application !
+Documents: Mon CV et mes bilans personnels sont disponibles en téléchargement dans la sidebar de l'application.
 
-💡 N'hésite pas à me contacter pour discuter d'opportunités professionnelles ou de projets data !
+N'hésitez pas à me contacter pour discuter d'opportunités professionnelles ou de projets.
 """
 
 
@@ -70,7 +70,7 @@ def search_portfolio_data(query: str) -> str:
         top_k = 8
         
         if VERBOSE_MODE:
-            print(f"  🔍 Recherche avec top_k={top_k}...")
+            print(f"Recherche avec top_k={top_k}...")
         
         # Rechercher dans la base vectorielle
         results = upstash_index.query(
@@ -83,7 +83,7 @@ def search_portfolio_data(query: str) -> str:
             return "Aucune information trouvée pour cette question."
         
         if VERBOSE_MODE:
-            print(f"  ✅ {len(results)} résultats trouvés")
+            print(f"{len(results)} résultats trouvés")
         
         # Formater les résultats et stocker les sources (sans filtrage strict)
         formatted_results = []
@@ -107,7 +107,7 @@ def search_portfolio_data(query: str) -> str:
     
     except Exception as e:
         if VERBOSE_MODE:
-            print(f"  ❌ Erreur : {str(e)}")
+            print(f"Erreur : {str(e)}")
         return f"Erreur lors de la recherche : {str(e)}"
 
 
@@ -168,11 +168,11 @@ async def test_agent():
     Fonction de test asynchrone pour l'agent avec RAG (version améliorée)
     """
     global VERBOSE_MODE
-    VERBOSE_MODE = True  # Activer verbose pour les tests
-    
+    VERBOSE_MODE = True
+
     agent = create_portfolio_agent()
-    
-    # Questions de test qui nécessitent la recherche vectorielle
+
+    # Questions de test
     test_questions = [
         "Qui es-tu ?",
         "Quelles sont tes compétences en SQL et Qlik Sense ?",
@@ -181,37 +181,33 @@ async def test_agent():
         "Quel est ton parcours de formation ?",
         "Parle-moi de ton alternance chez SMACL",
     ]
-    
-    print("🤖 Test de l'agent Portfolio avec RAG (Version améliorée)")
+
+    print("Test de l'agent Portfolio (mode test)")
     print("=" * 80)
-    print()
-    
-    # Session pour les tests
+
     session = SQLiteSession("portfolio_test")
-    
+
     for question in test_questions:
-        print(f"❓ Question : {question}")
+        print(f"Question : {question}")
         print("-" * 80)
-        
+
         try:
-            # Exécution asynchrone de l'agent avec session
             result = await Runner.run(agent, question, session=session)
-            
-            print(f"💬 Réponse : {result.final_output}")
-            
-            # Afficher les sources
+
+            print(f"Réponse : {result.final_output}")
+
             if LAST_SOURCES_USED:
-                print(f"📚 Sources : {', '.join(LAST_SOURCES_USED)}")
-            
+                print(f"Sources : {', '.join(LAST_SOURCES_USED)}")
+
         except MaxTurnsExceeded as e:
-            print(f"⚠️  Erreur : Nombre maximum de tours dépassé - {e}")
+            print(f"Erreur : Nombre maximum de tours dépassé - {e}")
         except ModelBehaviorError as e:
-            print(f"⚠️  Erreur : Comportement inattendu du modèle - {e}")
+            print(f"Erreur : Comportement inattendu du modèle - {e}")
         except AgentsException as e:
-            print(f"⚠️  Erreur de l'agent : {e}")
+            print(f"Erreur de l'agent : {e}")
         except Exception as e:
-            print(f"❌ Erreur inattendue : {e}")
-        
+            print(f"Erreur inattendue : {e}")
+
         print()
         print("=" * 80)
         print()
@@ -225,7 +221,7 @@ async def interactive_chat():
     
     agent = create_portfolio_agent()
     
-    print("🤖 Chat interactif avec l'agent Portfolio")
+    print("Chat interactif avec l'agent Portfolio")
     print("=" * 80)
     print("Commandes : 'exit' pour quitter | 'verbose' pour activer/désactiver le mode debug | 'sources' pour voir les dernières sources")
     print()
@@ -237,24 +233,24 @@ async def interactive_chat():
         try:
             user_input = input("Vous : ").strip()
         except KeyboardInterrupt:
-            print("\n\n👋 Au revoir !")
+            print("\n\nAu revoir !")
             break
         except EOFError:
-            print("\n\n👋 Au revoir !")
+            print("\n\nAu revoir !")
             break
         
         if user_input.lower() in ['exit', 'quit', 'q']:
-            print("\n👋 Au revoir !")
+            print("\nAu revoir !")
             break
         
         if user_input.lower() == 'verbose':
             VERBOSE_MODE = not VERBOSE_MODE
-            print(f"✅ Mode verbose {'activé' if VERBOSE_MODE else 'désactivé'}")
+            print(f"Mode verbose {'activé' if VERBOSE_MODE else 'désactivé'}")
             continue
         
         if user_input.lower() == 'sources':
             if LAST_SOURCES_USED:
-                print(f"📚 Dernières sources utilisées : {', '.join(LAST_SOURCES_USED)}")
+                print(f"Dernières sources utilisées : {', '.join(LAST_SOURCES_USED)}")
             else:
                 print("Aucune source utilisée pour l'instant")
             continue
@@ -271,16 +267,16 @@ async def interactive_chat():
             
             # Afficher les sources si disponibles
             if LAST_SOURCES_USED and not VERBOSE_MODE:
-                print(f"📚 Sources : {', '.join(LAST_SOURCES_USED)}")
+                print(f"Sources : {', '.join(LAST_SOURCES_USED)}")
             
         except MaxTurnsExceeded as e:
-            print(f"⚠️  Nombre maximum de tours dépassé : {e}")
+            print(f"Nombre maximum de tours dépassé : {e}")
         except ModelBehaviorError as e:
-            print(f"⚠️  Erreur de comportement du modèle : {e}")
+            print(f"Erreur de comportement du modèle : {e}")
         except AgentsException as e:
-            print(f"⚠️  Erreur de l'agent : {e}")
+            print(f"Erreur de l'agent : {e}")
         except Exception as e:
-            print(f"❌ Erreur inattendue : {e}")
+            print(f"Erreur inattendue : {e}")
         
         print()
         print("-" * 80)
@@ -289,7 +285,7 @@ async def interactive_chat():
 
 if __name__ == "__main__":
     # Choix du mode
-    print("🚀 Agent Portfolio - Version améliorée")
+    print("Agent Portfolio - Version améliorée")
     print()
     print("Choisissez le mode :")
     print("1. Test automatique (avec mode verbose)")

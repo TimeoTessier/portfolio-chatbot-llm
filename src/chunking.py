@@ -126,14 +126,14 @@ def chunk_markdown_files(data_folder: str = 'data') -> List[Dict[str, str]]:
     if not md_files:
         raise FileNotFoundError(f"Aucun fichier .md trouvé dans '{data_folder}'")
     
-    print(f"📚 Traitement de {len(md_files)} fichiers Markdown...")
+    print(f"Traitement de {len(md_files)} fichiers Markdown...")
     
     for md_file in md_files:
-        print(f"  📄 Lecture de {md_file.name}...")
+        print(f"  Lecture de {md_file.name}...")
         content = read_markdown_file(str(md_file))
         chunks = parse_markdown_sections(content, md_file.name)
         all_chunks.extend(chunks)
-        print(f"    ✅ {len(chunks)} chunks créés")
+        print(f"    {len(chunks)} chunks créés")
     
     return all_chunks
 
@@ -141,7 +141,7 @@ def chunk_markdown_files(data_folder: str = 'data') -> List[Dict[str, str]]:
 def display_chunks_summary(chunks: List[Dict[str, str]]):
     """Affiche un résumé des chunks créés."""
     print(f"\n{'='*60}")
-    print(f"📊 RÉSUMÉ DU CHUNKING")
+    print("RÉSUMÉ DU CHUNKING")
     print(f"{'='*60}")
     print(f"Nombre total de chunks : {len(chunks)}")
     
@@ -153,7 +153,7 @@ def display_chunks_summary(chunks: List[Dict[str, str]]):
             by_source[source] = 0
         by_source[source] += 1
     
-    print(f"\n📁 Répartition par fichier :")
+    print(f"\nRépartition par fichier :")
     for source, count in sorted(by_source.items()):
         print(f"  • {source}: {count} chunks")
     
@@ -163,7 +163,7 @@ def display_chunks_summary(chunks: List[Dict[str, str]]):
     min_size = min(chunk_sizes) if chunk_sizes else 0
     max_size = max(chunk_sizes) if chunk_sizes else 0
     
-    print(f"\n📏 Taille des chunks (caractères) :")
+    print(f"\nTaille des chunks (caractères) :")
     print(f"  • Moyenne: {avg_size:.0f}")
     print(f"  • Minimum: {min_size}")
     print(f"  • Maximum: {max_size}")
@@ -173,11 +173,11 @@ def display_chunks_summary(chunks: List[Dict[str, str]]):
 
 def display_sample_chunks(chunks: List[Dict[str, str]], n: int = 3):
     """Affiche quelques exemples de chunks."""
-    print(f"\n📋 EXEMPLES DE CHUNKS (premiers {min(n, len(chunks))}) :")
+    print(f"\nEXEMPLES DE CHUNKS (premiers {min(n, len(chunks))}) :")
     print(f"{'='*60}")
     
     for i, chunk in enumerate(chunks[:n], 1):
-        print(f"\n🔹 Chunk #{i}")
+        print(f"\nChunk #{i}")
         print(f"   Source: {chunk['metadata']['source']}")
         if chunk['metadata']['h1']:
             print(f"   H1: {chunk['metadata']['h1']}")
@@ -200,14 +200,14 @@ if __name__ == "__main__":
         display_chunks_summary(chunks)
         display_sample_chunks(chunks, n=5)
         
-        print(f"\n✅ Chunking terminé avec succès !")
-        print(f"💡 Les chunks sont prêts pour l'indexation dans Upstash Vector")
+        print(f"\nChunking terminé avec succès !")
+        print(f"Les chunks sont prêts pour l'indexation dans Upstash Vector")
         
         # Optionnel : sauvegarder les chunks dans un fichier pour inspection
         import json
         with open('data/chunks_output.json', 'w', encoding='utf-8') as f:
             json.dump(chunks, f, ensure_ascii=False, indent=2)
-        print(f"📝 Les chunks ont été sauvegardés dans 'data/chunks_output.json' pour inspection")
+        print(f"Les chunks ont été sauvegardés dans 'data/chunks_output.json' pour inspection")
         
     except Exception as e:
-        print(f"❌ Erreur : {e}")
+        print(f"Erreur : {e}")

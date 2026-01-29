@@ -17,16 +17,16 @@ def index_chunks_to_upstash():
         token=os.getenv("UPSTASH_VECTOR_REST_TOKEN")
     )
     
-    print("🔗 Connexion à Upstash établie")
+    print("Connexion à Upstash établie")
     
     # Charger les chunks
     with open("data/chunks_output.json", "r", encoding="utf-8") as f:
         chunks = json.load(f)
     
-    print(f"📂 {len(chunks)} chunks chargés depuis data/chunks_output.json")
+    print(f"{len(chunks)} chunks chargés depuis data/chunks_output.json")
     
     # Réinitialiser l'index (supprimer les anciennes données)
-    print("🗑️  Réinitialisation de l'index...")
+    print("Réinitialisation de l'index...")
     index.reset()
     
     # Préparer les données pour l'indexation
@@ -50,24 +50,9 @@ def index_chunks_to_upstash():
     for i in range(0, len(vectors), batch_size):
         batch = vectors[i:i + batch_size]
         index.upsert(vectors=batch)
-        print(f"✅ Indexé {min(i + batch_size, len(vectors))}/{len(vectors)} chunks")
+        print(f"Indexé {min(i + batch_size, len(vectors))}/{len(vectors)} chunks")
     
-    print(f"\n🎉 Indexation terminée ! {len(chunks)} chunks indexés dans Upstash")
-    
-    # Test de recherche
-    print("\n🔍 Test de recherche : 'Quels sont tes projets ?'")
-    results = index.query(
-        data="Quels sont tes projets ?",
-        top_k=3,
-        include_metadata=True
-    )
-    
-    print("\n📊 Résultats :")
-    for j, result in enumerate(results, 1):
-        print(f"\n{j}. Score: {result.score:.3f}")
-        print(f"   Source: {result.metadata.get('source', 'N/A')}")
-        print(f"   Hiérarchie: {result.metadata.get('h1', '')} > {result.metadata.get('h2', '')} > {result.metadata.get('h3', '')}")
-        print(f"   Contenu: {result.metadata.get('content', '')[:100]}...")
+    print(f"\nIndexation terminée : {len(chunks)} chunks indexés dans Upstash")
 
 if __name__ == "__main__":
     index_chunks_to_upstash()

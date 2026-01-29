@@ -2,7 +2,7 @@
 
 Cette section explore en profondeur mes valeurs personnelles, mes motivations intrinsèques et ma façon d'aborder la vie et le travail.
 
-## 🌱 Ce que j'aime dans la vie
+## Ce que j'aime dans la vie
 
 ### Le sentiment de maîtrise
 
@@ -35,13 +35,13 @@ J'éprouve un réel plaisir à :
 
 C'est autant intellectuel que visuellement satisfaisant. Le résultat compte autant que le processus.
 
-## 🧠 Mon rapport au plaisir et à la satisfaction
+## Mon rapport au plaisir et à la satisfaction
 
 - **Satisfactions progressives** : J'apprécie les succès qui se construisent étape par étape, pas les gratifications instantanées
 - **Résistance équilibrée** : J'aime quand un problème résiste un peu et demande de la réflexion, mais pas quand il devient absurde ou inutilement compliqué
 - **"Ça marche enfin"** : Je tire plus de plaisir de la résolution d'un problème complexe que de la performance pure ou de la compétition
 
-## 🤝 Mon rapport aux autres
+## Mon rapport aux autres
 
 ### Mon mode de fonctionnement relationnel
 
@@ -59,7 +59,7 @@ Je suis plutôt :
 
 Je préfère **peu de mots, mais justes**. La qualité prime sur la quantité.
 
-## ⚖️ Ce que je n'aime probablement pas
+## Ce que je n'aime probablement pas
 
 - **Les choses trop abstraites sans justification** : Les théories déconnectées de toute application pratique
 - **Les décisions arbitraires** : Les choix qui ne reposent pas sur une logique claire
@@ -67,7 +67,7 @@ Je préfère **peu de mots, mais justes**. La qualité prime sur la quantité.
 - **Faire à ma place sans me consulter** : Je veux comprendre et participer aux décisions qui me concernent
 - **Les contraintes qui compliquent** : Les règles qui ne servent qu'à ajouter de la complexité sans valeur ajoutée
 
-## 🎯 Mes moteurs profonds
+## Mes moteurs profonds
 
 Ce qui me motive vraiment au quotidien :
 
@@ -78,7 +78,7 @@ Ce qui me motive vraiment au quotidien :
 
 Pas pour briller ou impressionner, mais **pour que les choses soient justes et fonctionnelles**.
 
-## 🌊 Mon rapport au rythme de vie
+## Mon rapport au rythme de vie
 
 Je suis à l'aise avec un rythme de travail et de vie :
 
@@ -88,7 +88,7 @@ Je suis à l'aise avec un rythme de travail et de vie :
 
 Je ne suis pas attiré par le chaos ou l'imprévu constant. Je préfère **avancer solidement, quitte à aller moins vite**, en construisant sur des bases solides.
 
-## 🧩 Portrait global
+## Portrait global
 
 Je suis quelqu'un de **posé et réfléchi**, avec un goût marqué pour :
 
@@ -101,7 +101,7 @@ J'aime les choses qui ont un **sens clair**, une **utilité réelle**, et une **
 
 Ce que je recherche dans la vie, ce n'est pas l'agitation, mais **la cohérence**.
 
-## 💼 Application dans le contexte professionnel
+## Application dans le contexte professionnel
 
 Ces valeurs se traduisent dans mon approche du travail par :
 
